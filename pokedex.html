@@ -1,352 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Pokédex Toggle</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f2f2f2;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="pokedex.css">
+  <title>Pokédex - 50 Pokémon</title>
 
-    .pokedex {
-      max-width: 1200px;
-      margin: auto;
-      padding: 20px;
-      background-color: #ffcb05;
-      border: 5px solid #3b4cca;
-      border-radius: 10px;
-    }
-
-    .pokemon-container {
-      display: inline-block;
-      margin: 20px;
-      width: 220px;
-      font-family: Arial, sans-serif;
-    }
-
-    .pokemon-card {
-      background: #fff;
-      border: 2px solid #3b4cca;
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .pokemon-card:hover {
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      transform: translateY(-3px);
-    }
-
-    .pokemon-card img {
-      width: 100px;
-    }
-
-   
-    .toggle-details {
-      display: none;
-    }
-
-    .details {
-      display: none;
-      background-color: #f9f9f9;
-      border-radius: 0 0 10px 10px;
-      padding: 10px;
-      font-size: 14px;
-      text-align: left;
-      opacity: 0; 
-      height: 0; 
-      overflow: hidden;
-      transition: opacity 0.3s ease, height 0.3s ease; 
-    }
-
-   
-    .toggle-details:checked + .details {
-      display: block;
-      opacity: 1;  
-      height: auto; 
-    }
-  </style>
 </head>
 <body>
-
-  <div class="pokedex">
-    <h1>Pokédex</h1>
-    
-    <!-- Bulbasaur -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png" alt="Bulbasaur">
-          <h3>#001 Bulbasaur</h3>
-          <p>Type: Grass / Poison</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> A strange seed was planted on its back at birth.<br>
-          <strong>Stats:</strong> HP: 45 | Attack: 49 | Defense: 49<br>
-          <strong>Weaknesses:</strong> Fire, Ice, Flying, Psychic<br>
-          <strong>Evolution:</strong> Ivysaur → Venusaur
-        </div>
-      </label>
-    </div>
-
-    <!-- Charmander -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png" alt="Charmander">
-          <h3>#004 Charmander</h3>
-          <p>Type: Fire</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Prefers hot places. When it rains, steam spouts from its tail.<br>
-          <strong>Stats:</strong> HP: 39 | Attack: 52 | Defense: 43<br>
-          <strong>Weaknesses:</strong> Water, Rock, Ground<br>
-          <strong>Evolution:</strong> Charmeleon → Charizard
-        </div>
-      </label>
-    </div>
-
-    <!-- Squirtle -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png" alt="Squirtle">
-          <h3>#007 Squirtle</h3>
-          <p>Type: Water</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Its shell is not just for protection—it helps it swim.<br>
-          <strong>Stats:</strong> HP: 44 | Attack: 48 | Defense: 65<br>
-          <strong>Weaknesses:</strong> Electric, Grass<br>
-          <strong>Evolution:</strong> Wartortle → Blastoise
-        </div>
-      </label>
-    </div>
-
-    <!-- Pikachu -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png" alt="Pikachu">
-          <h3>#025 Pikachu</h3>
-          <p>Type: Electric</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Pikachu can generate powerful electricity with cheek sacs.<br>
-          <strong>Stats:</strong> HP: 35 | Attack: 55 | Defense: 40<br>
-          <strong>Weaknesses:</strong> Ground<br>
-          <strong>Evolution:</strong> Raichu
-        </div>
-      </label>
-    </div>
-
-    <!-- Jigglypuff -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/39.png" alt="Jigglypuff">
-          <h3>#039 Jigglypuff</h3>
-          <p>Type: Normal / Fairy</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Uses its alluring eyes to mesmerize foes.<br>
-          <strong>Stats:</strong> HP: 115 | Attack: 45 | Defense: 20<br>
-          <strong>Weaknesses:</strong> Steel, Poison<br>
-          <strong>Evolution:</strong> Wigglytuff
-        </div>
-      </label>
-    </div>
-
-    <!-- Meowth -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png" alt="Meowth">
-          <h3>#052 Meowth</h3>
-          <p>Type: Normal</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Loves shiny coins. Collects them at night.<br>
-          <strong>Stats:</strong> HP: 40 | Attack: 45 | Defense: 35<br>
-          <strong>Weaknesses:</strong> Fighting<br>
-          <strong>Evolution:</strong> Persian
-        </div>
-      </label>
-    </div>
-
-    <!-- Eevee -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png" alt="Eevee">
-          <h3>#133 Eevee</h3>
-          <p>Type: Normal</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Possesses an unstable genetic makeup.<br>
-          <strong>Stats:</strong> HP: 55 | Attack: 55 | Defense: 50<br>
-          <strong>Weaknesses:</strong> Fighting<br>
-          <strong>Evolution:</strong> Vaporeon / Jolteon / Flareon / etc.
-        </div>
-      </label>
-    </div>
-
-    <!-- Gastly -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png" alt="Gastly">
-          <h3>#092 Gastly</h3>
-          <p>Type: Ghost / Poison</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Made of gas. Almost invisible.<br>
-          <strong>Stats:</strong> HP: 30 | Attack: 35 | Defense: 30<br>
-          <strong>Weaknesses:</strong> Ghost, Psychic, Dark<br>
-          <strong>Evolution:</strong> Haunter → Gengar
-        </div>
-      </label>
-    </div>
-
-    <!-- Machop -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png" alt="Machop">
-          <h3>#066 Machop</h3>
-          <p>Type: Fighting</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Loves training with heavy weights.<br>
-          <strong>Stats:</strong> HP: 70 | Attack: 80 | Defense: 50<br>
-          <strong>Weaknesses:</strong> Psychic, Flying, Fairy<br>
-          <strong>Evolution:</strong> Machoke → Machamp
-        </div>
-      </label>
-    </div>
-
-    <!-- Caterpie -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/10.png" alt="Caterpie">
-          <h3>#010 Caterpie</h3>
-          <p>Type: Bug</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Climbs walls using suction feet.<br>
-          <strong>Stats:</strong> HP: 45 | Attack: 30 | Defense: 35<br>
-          <strong>Weaknesses:</strong> Fire, Flying, Rock<br>
-          <strong>Evolution:</strong> Metapod → Butterfree
-        </div>
-      </label>
-    </div>
-
-    <!-- Mewtwo -->
-    <div class="pokemon-container">
-        <label>
-          <div class="pokemon-card">
-            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/150.png" alt="Mewtwo">
-            <h3>#150 Mewtwo</h3>
-            <p>Type: Psychic</p>
-          </div>
-          <input type="checkbox" class="toggle-details">
-          <div class="details">
-            <strong>Description:</strong> Created by a scientist after years of gene splicing.<br>
-            <strong>Stats:</strong> HP: 106 | Attack: 110 | Defense: 90<br>
-            <strong>Weaknesses:</strong> Bug, Ghost, Dark<br>
-            <strong>Evolution:</strong> None
-          </div>
-        </label>
+  <div class="container">
+    <h1>Pokédex - First 50 Pokémon</h1>
+    <input type="text" class="search-box" id="search" placeholder="Search Pokémon..." />
+    <div class="generation-header">Generation I</div>
+    <div class="pokedex" id="pokedex"></div>
+  </div>
+  <div id="pokemonModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeModal">&times;</span>
+      <div id="modalContent"></div>
+      <div class="nav-buttons">
+        <button id="prevBtn">Previous</button>
+        <button id="nextBtn">Next</button>
       </div>
-
-    <!-- Gyarados -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/130.png" alt="Gyarados">
-          <h3>#130 Gyarados</h3>
-          <p>Type: Water / Flying</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Rarely seen in the wild. Huge and vicious.<br>
-          <strong>Stats:</strong> HP: 95 | Attack: 125 | Defense: 79<br>
-          <strong>Weaknesses:</strong> Electric, Rock<br>
-          <strong>Evolution:</strong> Magikarp
-        </div>
-      </label>
     </div>
+  </div>
+  <script>
+    const names = ['', 'Bulbasaur','Ivysaur','Venusaur','Charmander','Charmeleon','Charizard','Squirtle','Wartortle','Blastoise','Caterpie','Metapod','Butterfree','Weedle','Kakuna','Beedrill','Pidgey','Pidgeotto','Pidgeot','Rattata','Raticate','Spearow','Fearow','Ekans','Arbok','Pikachu','Raichu','Sandshrew','Sandslash','Nidoran♀','Nidorina','Nidoqueen','Nidoran♂','Nidorino','Nidoking','Clefairy','Clefable','Vulpix','Ninetales','Jigglypuff','Wigglytuff','Zubat','Golbat','Oddish','Gloom','Vileplume','Paras','Parasect','Venonat','Venomoth','Diglett'];
 
-    <!-- Alakazam -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/65.png" alt="Alakazam">
-          <h3>#065 Alakazam</h3>
-          <p>Type: Psychic</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Highly intelligent. Capable of telepathy.<br>
-          <strong>Stats:</strong> HP: 55 | Attack: 50 | Defense: 45<br>
-          <strong>Weaknesses:</strong> Bug, Ghost, Dark<br>
-          <strong>Evolution:</strong> Kadabra
-        </div>
-      </label>
-    </div>
+    const types = [[], ['grass', 'poison'], ['grass', 'poison'], ['grass', 'poison'], ['fire'], ['fire'], ['fire', 'flying'], ['water'], ['water'], ['water'], ['bug'], ['bug'], ['bug', 'flying'], ['bug', 'poison'], ['bug', 'poison'], ['bug', 'poison'], ['normal', 'flying'], ['normal', 'flying'], ['normal', 'flying'], ['normal'], ['normal'], ['normal', 'flying'], ['normal', 'flying'], ['poison'], ['poison'], ['electric'], ['electric'], ['ground'], ['ground'], ['poison'], ['poison'], ['poison', 'ground'], ['poison'], ['poison'], ['poison', 'ground'], ['fairy'], ['fairy'], ['fire'], ['fire'], ['normal', 'fairy'], ['normal', 'fairy'], ['poison', 'flying'], ['poison', 'flying'], ['grass', 'poison'], ['grass', 'poison'], ['grass', 'poison'], ['bug', 'grass'], ['bug', 'grass'], ['bug', 'poison'], ['bug', 'poison'], ['ground']];
 
-    <!-- Snorlax -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/143.png" alt="Snorlax">
-          <h3>#143 Snorlax</h3>
-          <p>Type: Normal</p>
-        </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Very lazy. Just eats and sleeps.<br>
-          <strong>Stats:</strong> HP: 160 | Attack: 110 | Defense: 65<br>
-          <strong>Weaknesses:</strong> Fighting<br>
-          <strong>Evolution:</strong> None
-        </div>
-      </label>
-    </div>
+    const pokemonData = [...Array(50).keys()].map(i => {
+      const id = i + 1;
+      return {
+        id,
+        name: names[id],
+        types: types[id],
+        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+        height: `${4 + id % 3}'${id % 12}"`,
+        weight: `${10 + id * 2} lbs`,
+        category: "Seed",
+        gender: id % 2 === 0 ? '♂' : '♀',
+        abilities: ['Overgrow'],
+        weaknesses: ['Fire', 'Ice', 'Flying', 'Psychic']
+      };
+    });
 
-    <!-- Dragonite -->
-    <div class="pokemon-container">
-      <label>
-        <div class="pokemon-card">
-          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/149.png" alt="Dragonite">
-          <h3>#149 Dragonite</h3>
-          <p>Type: Dragon / Flying</p>
+    const pokedex = document.getElementById('pokedex');
+    const modal = document.getElementById('pokemonModal');
+    const modalContent = document.getElementById('modalContent');
+    const closeModal = document.getElementById('closeModal');
+    let currentIndex = 0;
+
+    pokemonData.forEach((pokemon, index) => {
+      const card = document.createElement('div');
+      card.className = 'pokemon';
+      card.innerHTML = `
+        <img src="${pokemon.img}" alt="${pokemon.name}" />
+        <h3>${pokemon.name}</h3>
+        <div>${pokemon.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</div>
+      `;
+      card.addEventListener('click', () => {
+        currentIndex = index;
+        showModal(pokemon);
+      });
+      pokedex.appendChild(card);
+    });
+
+    function showModal(poke) {
+      modalContent.innerHTML = `
+        <div class="modal-details">
+          <img src="${poke.img}" alt="${poke.name}" />
+          <div class="info-block">
+            <h2>${poke.name} (#${poke.id.toString().padStart(3, '0')})</h2>
+            <p><strong>Height:</strong> ${poke.height}</p>
+            <p><strong>Weight:</strong> ${poke.weight}</p>
+            <p><strong>Category:</strong> ${poke.category}</p>
+            <p><strong>Gender:</strong> ${poke.gender}</p>
+            <p><strong>Abilities:</strong> ${poke.abilities.join(', ')}</p>
+            <p><strong>Type:</strong> ${poke.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</p>
+            <p class="weaknesses"><strong>Weaknesses:</strong> ${poke.weaknesses.map(w => `<span class="type type-${w.toLowerCase()}">${w}</span>`).join(' ')}</p>
+          </div>
         </div>
-        <input type="checkbox" class="toggle-details">
-        <div class="details">
-          <strong>Description:</strong> Kindhearted and rarely seen.<br>
-          <strong>Stats:</strong> HP: 91 | Attack: 134 | Defense: 95<br>
-          <strong>Weaknesses:</strong> Ice, Rock, Dragon, Fairy<br>
-          <strong>Evolution:</strong> Dragonair
-        </div>
-      </label>
-    </div>
-</div>
+      `;
+      modal.style.display = 'block';
+    }
+
+    document.getElementById('prevBtn').onclick = () => {
+      currentIndex = (currentIndex - 1 + pokemonData.length) % pokemonData.length;
+      showModal(pokemonData[currentIndex]);
+    };
+
+    document.getElementById('nextBtn').onclick = () => {
+      currentIndex = (currentIndex + 1) % pokemonData.length;
+      showModal(pokemonData[currentIndex]);
+    };
+
+    closeModal.onclick = function () {
+      modal.style.display = 'none';
+    };
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    };
+  </script>
 </body>
-</html>
+</html
