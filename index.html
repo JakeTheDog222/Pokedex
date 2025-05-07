@@ -143,7 +143,7 @@
         generationHeader.textContent = '';
         return;
       }
-      generationHeader.textContent = 'Generation I - First 50 Pokémon';
+      generationHeader.textContent = 'Generation I - First 100 Pokémon';
       data.forEach((pokemon, index) => {
         pokedex.appendChild(createPokemonCard(pokemon, index));
       });
@@ -210,7 +210,7 @@
     async function init() {
       generationHeader.textContent = 'Loading Pokémon...';
       const promises = [];
-      for (let i = 1; i <= 50; i++) {
+      for (let i = 1; i <= 100; i++) {
         promises.push(fetchPokemon(i));
       }
       const results = await Promise.all(promises);
