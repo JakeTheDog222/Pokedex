@@ -3,107 +3,223 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="pokedex.css">
-  <title>Pokédex - 50 Pokémon</title>
-
+  <link rel="stylesheet" href="pokedex.css" />
+  <title>Pokédex</title>
 </head>
 <body>
   <div class="container">
-    <h1>Pokédex - First 50 Pokémon</h1>
-    <input type="text" class="search-box" id="search" placeholder="Search Pokémon..." />
-    <div class="generation-header">Generation I</div>
+    <h1>Pokédex</h1>
+    <input type="text" class="search-box" id="search" placeholder="Search Pokémon..." aria-label="Search Pokémon" />
+    <div class="generation-header" id="generationHeader">Loading Pokémon...</div>
     <div class="pokedex" id="pokedex"></div>
   </div>
-  <div id="pokemonModal" class="modal">
+
+  <div id="pokemonModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
     <div class="modal-content">
-      <span class="close" id="closeModal">&times;</span>
+      <button class="close" id="closeModal" aria-label="Close modal">&times;</button>
       <div id="modalContent"></div>
       <div class="nav-buttons">
-        <button id="prevBtn">Previous</button>
-        <button id="nextBtn">Next</button>
+        <button id="prevBtn" aria-label="Previous Pokémon">Previous</button>
+        <button id="nextBtn" aria-label="Next Pokémon">Next</button>
       </div>
     </div>
   </div>
+
   <script>
-    const names = ['', 'Bulbasaur','Ivysaur','Venusaur','Charmander','Charmeleon','Charizard','Squirtle','Wartortle','Blastoise','Caterpie','Metapod','Butterfree','Weedle','Kakuna','Beedrill','Pidgey','Pidgeotto','Pidgeot','Rattata','Raticate','Spearow','Fearow','Ekans','Arbok','Pikachu','Raichu','Sandshrew','Sandslash','Nidoran♀','Nidorina','Nidoqueen','Nidoran♂','Nidorino','Nidoking','Clefairy','Clefable','Vulpix','Ninetales','Jigglypuff','Wigglytuff','Zubat','Golbat','Oddish','Gloom','Vileplume','Paras','Parasect','Venonat','Venomoth','Diglett'];
-
-    const types = [[], ['grass', 'poison'], ['grass', 'poison'], ['grass', 'poison'], ['fire'], ['fire'], ['fire', 'flying'], ['water'], ['water'], ['water'], ['bug'], ['bug'], ['bug', 'flying'], ['bug', 'poison'], ['bug', 'poison'], ['bug', 'poison'], ['normal', 'flying'], ['normal', 'flying'], ['normal', 'flying'], ['normal'], ['normal'], ['normal', 'flying'], ['normal', 'flying'], ['poison'], ['poison'], ['electric'], ['electric'], ['ground'], ['ground'], ['poison'], ['poison'], ['poison', 'ground'], ['poison'], ['poison'], ['poison', 'ground'], ['fairy'], ['fairy'], ['fire'], ['fire'], ['normal', 'fairy'], ['normal', 'fairy'], ['poison', 'flying'], ['poison', 'flying'], ['grass', 'poison'], ['grass', 'poison'], ['grass', 'poison'], ['bug', 'grass'], ['bug', 'grass'], ['bug', 'poison'], ['bug', 'poison'], ['ground']];
-
-    const pokemonData = [...Array(50).keys()].map(i => {
-      const id = i + 1;
-      return {
-        id,
-        name: names[id],
-        types: types[id],
-        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-        height: `${4 + id % 3}'${id % 12}"`,
-        weight: `${10 + id * 2} lbs`,
-        category: "Seed",
-        gender: id % 2 === 0 ? '♂' : '♀',
-        abilities: ['Overgrow'],
-        weaknesses: ['Fire', 'Ice', 'Flying', 'Psychic']
-      };
-    });
-
     const pokedex = document.getElementById('pokedex');
     const modal = document.getElementById('pokemonModal');
     const modalContent = document.getElementById('modalContent');
     const closeModal = document.getElementById('closeModal');
+    const searchBox = document.getElementById('search');
+    const generationHeader = document.getElementById('generationHeader');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let pokemonData = [];
+    let filteredData = [];
     let currentIndex = 0;
 
-    pokemonData.forEach((pokemon, index) => {
+    async function fetchPokemon(id) {
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        return {
+          id: data.id,
+          name: capitalize(data.name),
+          types: data.types.map(t => t.type.name),
+          img: data.sprites.other['official-artwork'].front_default || data.sprites.front_default,
+          height: (data.height / 10).toFixed(1) + ' m',
+          weight: (data.weight / 10).toFixed(1) + ' kg',
+          category: await fetchCategory(data.species.url),
+          gender: await fetchGender(data.species.url),
+          abilities: data.abilities.map(a => capitalize(a.ability.name)),
+          weaknesses: await fetchWeaknesses(data.types)
+        };
+      } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
+      }
+    }
+
+    async function fetchCategory(speciesUrl) {
+      try {
+        const res = await fetch(speciesUrl);
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        return capitalize(data.genera.find(g => g.language.name === 'en').genus);
+      } catch {
+        return 'Unknown';
+      }
+    }
+
+    async function fetchGender(speciesUrl) {
+      try {
+        const res = await fetch(speciesUrl);
+        if (!res.ok) throw new Error('Network response was not ok');
+        const data = await res.json();
+        if (data.gender_rate === -1) return 'Genderless';
+        if (data.gender_rate === 0) return '♂';
+        if (data.gender_rate === 8) return '♀';
+        return '♂/♀';
+      } catch {
+        return 'Unknown';
+      }
+    }
+
+    async function fetchWeaknesses(types) {
+      try {
+        const typeData = await Promise.all(types.map(async (type) => {
+          const res = await fetch(`https://pokeapi.co/api/v2/type/${type}`);
+          if (!res.ok) throw new Error('Network response was not ok');
+          return await res.json();
+        }));
+
+        const weaknesses = new Set();
+        typeData.forEach(typeInfo => {
+          typeInfo.damage_relations.double_damage_from.forEach(dmgType => {
+            weaknesses.add(dmgType.name);
+          });
+        });
+        return Array.from(weaknesses);
+      } catch {
+        return [];
+      }
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    function createPokemonCard(pokemon, index) {
       const card = document.createElement('div');
       card.className = 'pokemon';
+      card.tabIndex = 0;
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-pressed', 'false');
       card.innerHTML = `
-        <img src="${pokemon.img}" alt="${pokemon.name}" />
+        <img src="${pokemon.img}" alt="${pokemon.name}" loading="lazy" />
         <h3>${pokemon.name}</h3>
-        <div>${pokemon.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</div>
+        <div>${pokemon.types.map(t => `<span class="type type-${t}">${capitalize(t)}</span>`).join(' ')}</div>
       `;
       card.addEventListener('click', () => {
         currentIndex = index;
-        showModal(pokemon);
+        showModal(filteredData[currentIndex]);
       });
-      pokedex.appendChild(card);
-    });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          currentIndex = index;
+          showModal(filteredData[currentIndex]);
+        }
+      });
+      return card;
+    }
+
+    function renderPokedex(data) {
+      pokedex.innerHTML = '';
+      if (data.length === 0) {
+        pokedex.innerHTML = '<p>No Pokémon found.</p>';
+        generationHeader.textContent = '';
+        return;
+      }
+      generationHeader.textContent = 'Generation I - First 100 Pokémon';
+      data.forEach((pokemon, index) => {
+        pokedex.appendChild(createPokemonCard(pokemon, index));
+      });
+    }
 
     function showModal(poke) {
       modalContent.innerHTML = `
         <div class="modal-details">
           <img src="${poke.img}" alt="${poke.name}" />
           <div class="info-block">
-            <h2>${poke.name} (#${poke.id.toString().padStart(3, '0')})</h2>
+            <h2 id="modalTitle">${poke.name} (#${poke.id.toString().padStart(3, '0')})</h2>
             <p><strong>Height:</strong> ${poke.height}</p>
             <p><strong>Weight:</strong> ${poke.weight}</p>
             <p><strong>Category:</strong> ${poke.category}</p>
             <p><strong>Gender:</strong> ${poke.gender}</p>
             <p><strong>Abilities:</strong> ${poke.abilities.join(', ')}</p>
-            <p><strong>Type:</strong> ${poke.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</p>
-            <p class="weaknesses"><strong>Weaknesses:</strong> ${poke.weaknesses.map(w => `<span class="type type-${w.toLowerCase()}">${w}</span>`).join(' ')}</p>
+            <p><strong>Type:</strong> ${poke.types.map(t => `<span class="type type-${t}">${capitalize(t)}</span>`).join(' ')}</p>
+            <p class="weaknesses"><strong>Weaknesses:</strong> ${poke.weaknesses.map(w => `<span class="type type-${w.toLowerCase()}">${capitalize(w)}</span>`).join(' ')}</p>
           </div>
         </div>
       `;
       modal.style.display = 'block';
+      modal.focus();
     }
 
-    document.getElementById('prevBtn').onclick = () => {
-      currentIndex = (currentIndex - 1 + pokemonData.length) % pokemonData.length;
-      showModal(pokemonData[currentIndex]);
+    prevBtn.onclick = () => {
+      currentIndex = (currentIndex - 1 + filteredData.length) % filteredData.length;
+      showModal(filteredData[currentIndex]);
     };
 
-    document.getElementById('nextBtn').onclick = () => {
-      currentIndex = (currentIndex + 1) % pokemonData.length;
-      showModal(pokemonData[currentIndex]);
+    nextBtn.onclick = () => {
+      currentIndex = (currentIndex + 1) % filteredData.length;
+      showModal(filteredData[currentIndex]);
     };
 
-    closeModal.onclick = function () {
+    closeModal.onclick = () => {
       modal.style.display = 'none';
     };
 
-    window.onclick = function (event) {
-      if (event.target == modal) {
+    window.onclick = (event) => {
+      if (event.target === modal) {
         modal.style.display = 'none';
       }
     };
+
+    window.addEventListener('keydown', (event) => {
+      if (modal.style.display === 'block') {
+        if (event.key === 'ArrowLeft') {
+          prevBtn.click();
+        } else if (event.key === 'ArrowRight') {
+          nextBtn.click();
+        } else if (event.key === 'Escape') {
+          closeModal.click();
+        }
+      }
+    });
+
+    searchBox.addEventListener('input', () => {
+      const query = searchBox.value.toLowerCase().trim();
+      filteredData = pokemonData.filter(p => p.name.toLowerCase().includes(query));
+      renderPokedex(filteredData);
+    });
+
+    async function init() {
+      generationHeader.textContent = 'Loading Pokémon...';
+      const promises = [];
+      for (let i = 1; i <= 100; i++) {
+        promises.push(fetchPokemon(i));
+      }
+      const results = await Promise.all(promises);
+      pokemonData = results.filter(p => p !== null);
+      filteredData = [...pokemonData];
+      renderPokedex(filteredData);
+    }
+
+    init();
   </script>
 </body>
-</html
+</html>
