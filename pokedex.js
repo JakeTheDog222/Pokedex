@@ -94,7 +94,8 @@ const pokemonData = [...Array(100).keys()].map(i => {
     gender: id % 2 === 0 ? '♂' : '♀',
     abilities: ['Overgrow'],
     weaknesses: ['Fire', 'Ice', 'Flying', 'Psychic'],
-    description: descriptions[id]
+    description: descriptions[id],
+    generation: 1
   };
 });
 
@@ -104,20 +105,52 @@ const modalContent = document.getElementById('modalContent');
 const closeModal = document.getElementById('closeModal');
 let currentIndex = 0;
 
-pokemonData.forEach((pokemon, index) => {
-  const card = document.createElement('div');
-  card.className = 'pokemon';
-  card.innerHTML = `
-    <img src="${pokemon.img}" alt="${pokemon.name}" />
-    <h3>${pokemon.name}</h3>
-    <div>${pokemon.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</div>
-  `;
-  card.addEventListener('click', () => {
-    currentIndex = index;
-    showModal(pokemon);
+const generationSelect = document.getElementById('generationSelect');
+const generationHeader = document.getElementById('generationHeader');
+const searchInput = document.getElementById('search');
+
+function renderPokemonList() {
+  pokedex.innerHTML = '';
+  const selectedGen = parseInt(generationSelect.value);
+  const query = searchInput.value.toLowerCase();
+
+  const filteredPokemon = pokemonData.filter(pokemon => {
+    return pokemon.generation === selectedGen && pokemon.name.toLowerCase().includes(query);
   });
-  pokedex.appendChild(card);
+
+  filteredPokemon.forEach((pokemon) => {
+    const card = document.createElement('div');
+    card.className = 'pokemon';
+    card.innerHTML = `
+      <img src="${pokemon.img}" alt="${pokemon.name}" />
+      <h3>${pokemon.name}</h3>
+      <div>${pokemon.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</div>
+    `;
+    card.addEventListener('click', () => {
+      currentIndex = pokemonData.indexOf(pokemon);
+      showModal(pokemon);
+    });
+    pokedex.appendChild(card);
+  });
+
+  const genTextMap = {
+    1: 'Generation I',
+    2: 'Generation II',
+    3: 'Generation III'
+  };
+  generationHeader.textContent = genTextMap[selectedGen] || 'Generation';
+}
+
+generationSelect.addEventListener('change', () => {
+  renderPokemonList();
 });
+
+searchInput.addEventListener('input', () => {
+  renderPokemonList();
+});
+
+// Initial render after all Pokémon are added
+renderPokemonList();
 
 function showModal(poke) {
   modalContent.innerHTML = `
@@ -158,183 +191,3 @@ window.onclick = function (event) {
     modal.classList.remove('show');
   }
 };
-
-// Gen 2 Pokémon data
-const gen2Names = [
-  'Chikorita', 'Bayleef', 'Meganium', 'Cyndaquil', 'Quilava', 'Typhlosion', 'Totodile', 'Croconaw', 'Feraligatr', 'Sentret',
-  'Furret', 'Hoothoot', 'Noctowl', 'Ledyba', 'Ledian', 'Spinarak', 'Ariados', 'Crobat', 'Chinchou', 'Lanturn'
-];
-
-const gen2Descriptions = [
-  "A leaf is growing on its head. It is said that when the leaf grows large, it can perform a photosynthesis.",
-  "The leaf on its head grows larger as it evolves. It is very protective of its friends.",
-  "It is a gentle Pokémon that uses its leaf to soothe others. It can create a calming aura.",
-  "It has a fiery back that burns hotter as it gets excited. It is quick to attack.",
-  "It has a sleek body and can shoot flames from its back. It is very agile.",
-  "It can unleash a powerful fire blast that can melt boulders. It is very fierce.",
-  "It has strong jaws and a powerful tail. It is a skilled swimmer.",
-  "It has sharp teeth and a tough hide. It is very territorial.",
-  "It is a fierce Pokémon with a strong bite. It is a skilled hunter.",
-  "It is a small, curious Pokémon that is always alert.",
-  "It is a long, slender Pokémon that can move quickly.",
-  "It is a nocturnal Pokémon with sharp eyes.",
-  "It is a wise Pokémon that can see in the dark.",
-  "It is a small bug Pokémon that can fly.",
-  "It is a bug Pokémon with strong legs for jumping.",
-  "It spins webs to catch prey. It is very patient.",
-  "It is a spider Pokémon with venomous fangs.",
-  "It is a bat Pokémon that can fly silently.",
-  "It has glowing antennae to attract prey.",
-  "It uses its light to navigate underwater."
-];
-
-const gen2Types = [
-  ['grass'], ['grass'], ['grass', 'psychic'], ['fire'], ['fire'], ['fire'], ['water'], ['water'], ['water'], ['normal'],
-  ['normal'], ['normal', 'flying'], ['normal', 'flying'], ['bug', 'flying'], ['bug', 'flying'], ['bug', 'poison'], ['bug', 'poison'], ['poison', 'flying'], ['water', 'electric'], ['water', 'electric']
-];
-
-// Gen 3 Pokémon data
-const gen3Names = [
-  'Treecko', 'Grovyle', 'Sceptile', 'Torchic', 'Combusken', 'Blaziken', 'Mudkip', 'Marshtomp', 'Swampert', 'Poochyena',
-  'Mightyena', 'Zigzagoon', 'Linoone', 'Wurmple', 'Silcoon', 'Beautifly', 'Cascoon', 'Dustox', 'Lotad', 'Lombre'
-];
-
-const gen3Descriptions = [
-  "It has a tail that can cling to branches. It is very agile.",
-  "It is a skilled climber and can leap great distances.",
-  "It has sharp claws and can cut through thick foliage.",
-  "It has a fiery crest on its head. It is very energetic.",
-  "It has strong legs and can kick with great force.",
-  "It can unleash powerful fire punches. It is very brave.",
-  "It has a large fin on its head. It is a strong swimmer.",
-  "It has powerful legs and can jump high.",
-  "It is a large, powerful Pokémon with strong arms.",
-  "It is a small, fierce Pokémon with sharp teeth.",
-  "It is a loyal Pokémon that protects its pack.",
-  "It has a zigzag pattern on its fur. It is very curious.",
-  "It is a fast runner and can dodge attacks.",
-  "It is a small worm Pokémon that evolves quickly.",
-  "It is a cocoon Pokémon that is preparing to evolve.",
-  "It is a beautiful butterfly Pokémon with colorful wings.",
-  "It is a cocoon Pokémon that is preparing to evolve.",
-  "It is a moth Pokémon with toxic scales.",
-  "It has a lily pad on its back. It loves water.",
-  "It is a playful Pokémon that loves to swim."
-];
-
-const gen3Types = [
-  ['grass'], ['grass'], ['grass'], ['fire'], ['fire', 'fighting'], ['fire', 'fighting'], ['water'], ['water', 'ground'], ['water', 'ground'], ['dark'],
-  ['dark'], ['normal'], ['normal'], ['bug'], ['bug'], ['bug', 'flying'], ['bug'], ['bug', 'poison'], ['water', 'grass'], ['water', 'grass']
-];
-
-for (let i = 0; i < gen2Count; i++) {
-  const id = gen2StartId + i;
-  pokemonData.push({
-    id,
-    name: gen2Names[i],
-    types: gen2Types[i],
-    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-    height: `${5 + i % 3}'${i % 12}"`,
-    weight: `${15 + i * 2} lbs`,
-    category: "Gen 2 Category",
-    gender: i % 2 === 0 ? '♂' : '♀',
-    abilities: ['Ability1'],
-    weaknesses: ['Fire'],
-    description: gen2Descriptions[i],
-    generation: 2
-  });
-}
-
-for (let i = 0; i < gen3Count; i++) {
-  const id = gen3StartId + i;
-  pokemonData.push({
-    id,
-    name: gen3Names[i],
-    types: gen3Types[i],
-    img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-    height: `${6 + i % 3}'${i % 12}"`,
-    weight: `${20 + i * 2} lbs`,
-    category: "Gen 3 Category",
-    gender: i % 2 === 0 ? '♂' : '♀',
-    abilities: ['Ability2'],
-    weaknesses: ['Water'],
-    description: gen3Descriptions[i],
-    generation: 3
-  });
-}
-
-// Add generation property to existing Gen 1 Pokémon
-pokemonData.forEach(pokemon => {
-  if (!pokemon.generation) {
-    pokemon.generation = 1;
-  }
-});
-
-const generationSelect = document.getElementById('generationSelect');
-const generationHeader = document.querySelector('.generation-header');
-const searchInput = document.getElementById('search');
-
-function renderPokemonList() {
-  console.log('Rendering Pokémon list for generation:', generationSelect.value);
-  pokedex.innerHTML = '';
-  const selectedGen = parseInt(generationSelect.value);
-  const query = searchInput.value.toLowerCase();
-
-  const filteredPokemon = pokemonData.filter(pokemon => {
-    return pokemon.generation === selectedGen && pokemon.name.toLowerCase().includes(query);
-  });
-
-  filteredPokemon.forEach((pokemon, index) => {
-    const card = document.createElement('div');
-    card.className = 'pokemon';
-    card.innerHTML = `
-      <img src="${pokemon.img}" alt="${pokemon.name}" />
-      <h3>${pokemon.name}</h3>
-      <div>${pokemon.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</div>
-    `;
-    card.addEventListener('click', () => {
-      currentIndex = pokemonData.indexOf(pokemon);
-      showModal(pokemon);
-    });
-    pokedex.appendChild(card);
-  });
-
-  const genTextMap = {
-    1: 'Generation I',
-    2: 'Generation II',
-    3: 'Generation III'
-  };
-  generationHeader.textContent = genTextMap[selectedGen] || 'Generation';
-}
-
-generationSelect.addEventListener('change', () => {
-  console.log('Generation filter changed to:', generationSelect.value);
-  renderPokemonList();
-});
-
-searchInput.addEventListener('input', () => {
-  renderPokemonList();
-});
-
-// Add generation property to existing Gen 1 Pokémon
-pokemonData.forEach(pokemon => {
-  if (!pokemon.generation) {
-    pokemon.generation = 1;
-  }
-});
-
-const generationSelect = document.getElementById('generationSelect');
-const generationHeader = document.querySelector('.generation-header');
-const searchInput = document.getElementById('search');
-
-generationSelect.addEventListener('change', () => {
-  console.log('Generation filter changed to:', generationSelect.value);
-  renderPokemonList();
-});
-
-searchInput.addEventListener('input', () => {
-  renderPokemonList();
-});
-
-// Initial render moved here after all Pokémon are added
-renderPokemonList();
