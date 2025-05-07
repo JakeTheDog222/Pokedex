@@ -9,8 +9,14 @@
 <body>
   <div class="container">
     <h1>Pokédex - First 100 Pokémon</h1>
+    <label for="generationSelect">Filter by Generation:</label>
+    <select id="generationSelect">
+      <option value="1" selected>Generation I</option>
+      <option value="2">Generation II</option>
+      <option value="3">Generation III</option>
+    </select>
     <input type="text" class="search-box" id="search" placeholder="Search Pokémon..." />
-    <div class="generation-header">Generation I</div>
+    <div class="generation-header" id="generationHeader">Generation I</div>
     <div class="pokedex" id="pokedex"></div>
   </div>
   <div id="pokemonModal" class="modal">
@@ -185,20 +191,101 @@
       }
     };
     
-    // Add search functionality
-    const searchInput = document.getElementById('search');
-    searchInput.addEventListener('input', function() {
-      const query = this.value.toLowerCase();
-      const cards = pokedex.getElementsByClassName('pokemon');
-      Array.from(cards).forEach(card => {
-        const name = card.querySelector('h3').textContent.toLowerCase();
-        if (name.includes(query)) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
+    // Extend pokemonData with Gen 2 and Gen 3 Pokémon with placeholder data and generation property
+    const gen2StartId = 101;
+    const gen3StartId = 152;
+    const gen2Count = 20; // number of Gen 2 Pokémon to simulate
+    const gen3Count = 20; // number of Gen 3 Pokémon to simulate
+
+    for (let i = 0; i < gen2Count; i++) {
+      const id = gen2StartId + i;
+      pokemonData.push({
+        id,
+        name: `Gen2-Pokemon${i + 1}`,
+        types: ['normal'],
+        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+        height: `${5 + i % 3}'${i % 12}"`,
+        weight: `${15 + i * 2} lbs`,
+        category: "Gen 2 Category",
+        gender: i % 2 === 0 ? '♂' : '♀',
+        abilities: ['Ability1'],
+        weaknesses: ['Fire'],
+        description: `Placeholder description for Gen 2 Pokémon ${i + 1}.`,
+        generation: 2
       });
+    }
+
+    for (let i = 0; i < gen3Count; i++) {
+      const id = gen3StartId + i;
+      pokemonData.push({
+        id,
+        name: `Gen3-Pokemon${i + 1}`,
+        types: ['normal'],
+        img: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
+        height: `${6 + i % 3}'${i % 12}"`,
+        weight: `${20 + i * 2} lbs`,
+        category: "Gen 3 Category",
+        gender: i % 2 === 0 ? '♂' : '♀',
+        abilities: ['Ability2'],
+        weaknesses: ['Water'],
+        description: `Placeholder description for Gen 3 Pokémon ${i + 1}.`,
+        generation: 3
+      });
+    }
+
+    // Add generation property to existing Gen 1 Pokémon
+    pokemonData.forEach(pokemon => {
+      if (!pokemon.generation) {
+        pokemon.generation = 1;
+      }
     });
+
+    const generationSelect = document.getElementById('generationSelect');
+    const generationHeader = document.querySelector('.generation-header');
+    const searchInput = document.getElementById('search');
+
+    function renderPokemonList() {
+      pokedex.innerHTML = '';
+      const selectedGen = parseInt(generationSelect.value);
+      const query = searchInput.value.toLowerCase();
+
+      const filteredPokemon = pokemonData.filter(pokemon => {
+        return pokemon.generation === selectedGen && pokemon.name.toLowerCase().includes(query);
+      });
+
+      filteredPokemon.forEach((pokemon, index) => {
+        const card = document.createElement('div');
+        card.className = 'pokemon';
+        card.innerHTML = `
+          <img src="${pokemon.img}" alt="${pokemon.name}" />
+          <h3>${pokemon.name}</h3>
+          <div>${pokemon.types.map(t => `<span class="type type-${t}">${t}</span>`).join(' ')}</div>
+        `;
+        card.addEventListener('click', () => {
+          currentIndex = pokemonData.indexOf(pokemon);
+          showModal(pokemon);
+        });
+        pokedex.appendChild(card);
+      });
+
+      const genTextMap = {
+        1: 'Generation I',
+        2: 'Generation II',
+        3: 'Generation III'
+      };
+      generationHeader.textContent = genTextMap[selectedGen] || 'Generation';
+    }
+
+    generationSelect.addEventListener('change', () => {
+      renderPokemonList();
+    });
+
+    searchInput.addEventListener('input', () => {
+      renderPokemonList();
+    });
+
+    // Initial render
+    renderPokemonList();
   </script>
 </body>
 </html>
